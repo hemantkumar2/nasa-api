@@ -38,7 +38,7 @@ const index = () => {
   const getFormattedDate = (date) => {
     return moment(date).format("MMM Do YYYY");
   };
-  console.log(imagesData);
+
   return (
     <>
       <Row style={{ padding: "5rem", margin: "0 auto" }} gutter={[16, 16]}>

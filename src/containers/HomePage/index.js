@@ -5,15 +5,16 @@ import { API_ROOT_APOD } from "constants/api-config";
 import { Input, Button, Form } from "antd";
 import { SearchContext } from "context/SearchContext";
 
+const { REACT_APP_API_KEY } = process.env;
 const index = () => {
   const [apodData, setApodData] = useState(null);
   const [searchInputText, setSearchInputText] = useState("");
   const { setSearchText } = useContext(SearchContext);
   const history = useHistory();
-  console.log(process.env);
+
   useEffect(async () => {
     const apodData = await axios.get(
-      `${API_ROOT_APOD}planetary/apod?api_key=${process.env.REACT_APP_API_KEY}`
+      `${API_ROOT_APOD}planetary/apod?api_key=${REACT_APP_API_KEY}`
     );
     const { data } = apodData;
     setApodData(data);
@@ -22,6 +23,7 @@ const index = () => {
   const handleInputChange = (e) => {
     setSearchInputText(e.target.value);
   };
+
   const handleSearch = () => {
     setSearchText(searchInputText);
     history.push("/search-results");
