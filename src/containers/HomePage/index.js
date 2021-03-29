@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { API_ROOT_APOD, API_KEY } from "constants/api-config";
+import { API_ROOT_APOD } from "constants/api-config";
 import { Input, Button, Form } from "antd";
 import { SearchContext } from "context/SearchContext";
 
@@ -10,9 +10,10 @@ const index = () => {
   const [searchInputText, setSearchInputText] = useState("");
   const { setSearchText } = useContext(SearchContext);
   const history = useHistory();
+  console.log(process.env);
   useEffect(async () => {
     const apodData = await axios.get(
-      `${API_ROOT_APOD}planetary/apod?api_key=${API_KEY}`
+      `${API_ROOT_APOD}planetary/apod?api_key=${process.env.REACT_APP_API_KEY}`
     );
     const { data } = apodData;
     setApodData(data);
