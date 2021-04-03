@@ -2,16 +2,19 @@ import React, { useContext, useEffect, useState } from "react";
 import { SearchContext } from "context/SearchContext";
 import axios from "axios";
 import { API_ROOT_IMAGES } from "constants/api-config";
-import { Card, message, Row, Col } from "antd";
+import { Card, message, Row, Col, Spin } from "antd";
 import moment from "moment";
+
+import "./index.scss";
 
 const { Meta } = Card;
 
-const index = () => {
+const SearchResultPage = () => {
   const { searchText } = useContext(SearchContext);
   const [imagesData, setImagesData] = useState({
     pageDetails: [],
     images: [],
+    status: null,
   });
 
   useEffect(() => {
@@ -20,27 +23,29 @@ const index = () => {
         .get(
           `${API_ROOT_IMAGES}search?page=${1}&q=${searchText}&media_type=image`
         )
-        .then((res) =>
+        .then((res) => {
+          console.log(res.status);
           setImagesData({
             pageDetails: res?.data?.collection?.links,
             images: res?.data?.collection?.items,
-          })
-        )
+            status: res?.status,
+          });
+        })
         .catch((err) => {
           console.log(err);
-          message.error("Something went wrong contact support");
+          message.error("Something went wrong contact support!");
         });
     }
     fetchNasaImages();
     return () => {};
   }, []);
-
+  console.log(imagesData);
   const getFormattedDate = (date) => {
     return moment(date).format("MMM Do YYYY");
   };
 
-  return (
-    <>
+  const getImageCardContainer = () => {
+    return (
       <Row justify="center">
         <Col xs={22} sm={20} md={20} lg={18} xl={16}>
           <Row
@@ -74,8 +79,22 @@ const index = () => {
           </Row>
         </Col>
       </Row>
-    </>
-  );
+    );
+  };
+  const getSearchBody = () => {
+    if (imagesData.status === null)
+      return (
+        <div className="loader">
+          <Spin size="large" />
+        </div>
+      );
+    if (imagesData.status === 200 && !imagesData.images.length)
+      return <div>No Images found</div>;
+    if (imagesData.status === 200 && imagesData.images.length)
+      return getImageCardContainer();
+  };
+
+  return <>{getSearchBody()}</>;
 };
 
-export default index;
+export default SearchResultPage;
