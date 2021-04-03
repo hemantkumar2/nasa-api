@@ -41,28 +41,38 @@ const index = () => {
 
   return (
     <>
-      <Row style={{ padding: "5rem", margin: "0 auto" }} gutter={[16, 16]}>
-        {imagesData?.images?.map((image) => {
-          return (
-            <Col key={image?.data[0]?.nasa_id}>
-              <Card
-                style={{ width: 200 }}
-                cover={
-                  <img
-                    style={{ height: "15rem" }}
-                    alt={image?.data[0]?.title}
-                    src={image?.links[0]?.href}
-                  />
-                }
-              >
-                <Meta
-                  title={image?.data[0].title}
-                  description={getFormattedDate(image?.data[0]?.date_created)}
-                />
-              </Card>
-            </Col>
-          );
-        })}
+      <Row justify="center">
+        <Col xs={22} sm={20} md={20} lg={18} xl={16}>
+          <Row
+            style={{ paddingTop: "5rem" }}
+            gutter={[16, 16]}
+            justify="center"
+          >
+            {imagesData?.images?.map((image) => {
+              return (
+                <Col key={image?.data[0]?.nasa_id}>
+                  <Card
+                    style={{ width: 200 }}
+                    cover={
+                      <img
+                        style={{ height: "15rem" }}
+                        alt={image?.data[0]?.title}
+                        src={image?.links[0]?.href}
+                      />
+                    }
+                  >
+                    <Meta
+                      title={image?.data[0].title}
+                      description={getFormattedDate(
+                        image?.data[0]?.date_created
+                      )}
+                    />
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
+        </Col>
       </Row>
     </>
   );
