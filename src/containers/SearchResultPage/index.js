@@ -24,6 +24,10 @@ const SearchResultPage = () => {
   });
 
   useEffect(() => {
+    scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
+
+  useEffect(() => {
     const paginatedData = [];
     function fetchNasaImages() {
       axios
