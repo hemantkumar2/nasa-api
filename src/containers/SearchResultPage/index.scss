@@ -5,3 +5,9 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 5rem;
+}

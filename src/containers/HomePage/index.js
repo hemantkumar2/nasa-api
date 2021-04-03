@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { API_ROOT_APOD } from "constants/api-config";
-import { Input, Button, Form } from "antd";
+import { Input, Button, Form, message } from "antd";
 import { SearchContext } from "context/SearchContext";
 
 const { REACT_APP_API_KEY } = process.env;
@@ -25,6 +25,8 @@ const index = () => {
   };
 
   const handleSearch = () => {
+    if (!searchInputText)
+      return message.warning("Please provide any search input!");
     setSearchText(searchInputText);
     history.push("/search-results");
   };

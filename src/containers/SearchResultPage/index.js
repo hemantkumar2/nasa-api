@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { SearchContext } from "context/SearchContext";
 import axios from "axios";
-import { API_ROOT_IMAGES } from "constants/api-config";
 import { Card, message, Row, Col, Spin } from "antd";
 import moment from "moment";
+
+import { API_ROOT_IMAGES } from "constants/api-config";
+import { SearchContext } from "context/SearchContext";
+import Pagination from "components/Pagination";
 
 import "./index.scss";
 
@@ -16,19 +18,30 @@ const SearchResultPage = () => {
     images: [],
     status: null,
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    paginatedImagesData: [],
+  });
 
   useEffect(() => {
+    const paginatedData = [];
     function fetchNasaImages() {
       axios
         .get(
           `${API_ROOT_IMAGES}search?page=${1}&q=${searchText}&media_type=image`
         )
         .then((res) => {
-          console.log(res.status);
           setImagesData({
             pageDetails: res?.data?.collection?.links,
             images: res?.data?.collection?.items,
             status: res?.status,
+          });
+          const imagesArr = res?.data?.collection?.items;
+          for (let i = 0; i < imagesArr.length / 20; i++) {
+            paginatedData.push(imagesArr.slice(i * 20, i * 20 + 20));
+          }
+          setPagination({
+            paginatedImagesData: paginatedData,
           });
         })
         .catch((err) => {
@@ -39,7 +52,7 @@ const SearchResultPage = () => {
     fetchNasaImages();
     return () => {};
   }, []);
-  console.log(imagesData);
+
   const getFormattedDate = (date) => {
     return moment(date).format("MMM Do YYYY");
   };
@@ -53,7 +66,7 @@ const SearchResultPage = () => {
             gutter={[16, 16]}
             justify="center"
           >
-            {imagesData?.images?.map((image) => {
+            {pagination?.paginatedImagesData[currentPage - 1]?.map((image) => {
               return (
                 <Col key={image?.data[0]?.nasa_id}>
                   <Card
@@ -94,7 +107,28 @@ const SearchResultPage = () => {
       return getImageCardContainer();
   };
 
-  return <>{getSearchBody()}</>;
+  const getPagination = () => {
+    const total = imagesData.images.length;
+    return (
+      <div className="pagination">
+        <Pagination
+          onChange={(pageNo) => setCurrentPage(pageNo)}
+          hideOnSinglePage={true}
+          showSizeChanger={false}
+          pageSize={20}
+          defaultCurrent={1}
+          total={total}
+        />
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {getSearchBody()}
+      {getPagination()}
+    </>
+  );
 };
 
 export default SearchResultPage;
