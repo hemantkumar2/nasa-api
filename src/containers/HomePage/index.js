@@ -69,7 +69,7 @@ const index = () => {
         <Row>
           <Col lg={16}></Col>
           <Col span={8}>
-            <Form onSubmit={handleSearch}>
+            <Form onFinish={handleSearch}>
               <Row>
                 <Col span={18}>
                   <Input

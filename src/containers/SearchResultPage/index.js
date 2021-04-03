@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 import { Card, message, Row, Col, Spin } from "antd";
+import { LeftCircleTwoTone } from "@ant-design/icons";
 import moment from "moment";
 
 import { API_ROOT_IMAGES } from "constants/api-config";
 import { SearchContext } from "context/SearchContext";
 import Pagination from "components/Pagination";
+import Navbar from "components/Navbar";
 
 import "./index.scss";
 
@@ -13,6 +16,7 @@ const { Meta } = Card;
 
 const SearchResultPage = () => {
   const { searchText } = useContext(SearchContext);
+  const history = useHistory();
   const [imagesData, setImagesData] = useState({
     pageDetails: [],
     images: [],
@@ -166,9 +170,20 @@ const SearchResultPage = () => {
       </div>
     );
   };
+  const getNavbar = () => {
+    return (
+      <Navbar>
+        <LeftCircleTwoTone
+          onClick={() => history.push("/")}
+          style={{ fontSize: "34px", marginLeft: "2rem" }}
+        />
+      </Navbar>
+    );
+  };
 
   return (
     <>
+      {getNavbar(0)}
       {getSearchBody()}
       {getPagination()}
     </>
