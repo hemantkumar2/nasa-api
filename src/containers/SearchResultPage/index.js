@@ -17,12 +17,13 @@ const SearchResultPage = () => {
     pageDetails: [],
     images: [],
     status: null,
+    nextPageFromApi: {},
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState({
     paginatedImagesData: [],
   });
-
+  const [currentApiPage, setCurrentApiPage] = useState(1);
   useEffect(() => {
     scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
@@ -32,13 +33,14 @@ const SearchResultPage = () => {
     function fetchNasaImages() {
       axios
         .get(
-          `${API_ROOT_IMAGES}search?page=${1}&q=${searchText}&media_type=image`
+          `${API_ROOT_IMAGES}search?page=${currentApiPage}&q=${searchText}&media_type=image`
         )
         .then((res) => {
           setImagesData({
             pageDetails: res?.data?.collection?.links,
             images: res?.data?.collection?.items,
             status: res?.status,
+            nextPageFromApi: res?.data?.collection?.links,
           });
           const imagesArr = res?.data?.collection?.items;
           for (let i = 0; i < imagesArr.length / 20; i++) {
@@ -56,6 +58,44 @@ const SearchResultPage = () => {
     fetchNasaImages();
     return () => {};
   }, []);
+
+  const fetchMoreData = () => {
+    const paginatedData = [];
+    axios
+      .get(
+        `${API_ROOT_IMAGES}search?page=${currentApiPage}&q=${searchText}&media_type=image`
+      )
+      .then((res) => {
+        setImagesData({
+          ...pagination,
+          pageDetails: res?.data?.collection?.links,
+          images: [...imagesData.images, ...res?.data?.collection?.items],
+          status: res?.status,
+        });
+        const imagesArr = [
+          ...imagesData.images,
+          ...res?.data?.collection?.items,
+        ];
+        for (let i = 0; i < imagesArr.length / 20; i++) {
+          paginatedData.push(imagesArr.slice(i * 20, i * 20 + 20));
+        }
+        setPagination({
+          paginatedImagesData: paginatedData,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        message.error("Something went wrong contact support!");
+      });
+  };
+  const onPageChange = (pageNo) => {
+    const maxPageNo = pagination?.paginatedImagesData.length;
+    if (pageNo === maxPageNo && currentApiPage <= 100) {
+      setCurrentApiPage((previousState) => previousState + 1);
+      fetchMoreData();
+    }
+    setCurrentPage(pageNo);
+  };
 
   const getFormattedDate = (date) => {
     return moment(date).format("MMM Do YYYY");
@@ -116,7 +156,7 @@ const SearchResultPage = () => {
     return (
       <div className="pagination">
         <Pagination
-          onChange={(pageNo) => setCurrentPage(pageNo)}
+          onChange={(pageNo) => onPageChange(pageNo)}
           hideOnSinglePage={true}
           showSizeChanger={false}
           pageSize={20}
