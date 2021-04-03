@@ -1,0 +1,31 @@
+.apod-card {
+  border-radius: 1.5rem !important;
+  .apod-image {
+    width: 100%;
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+  .ant-card-body {
+    padding: 0px;
+  }
+  .apod-details-container {
+    padding: 24px;
+    color: #333;
+    .apod-date {
+      font-size: 1.8rem;
+      color: rgb(65, 64, 64);
+    }
+
+    .apod-explanation {
+      font-size: 1.6rem;
+      letter-spacing: 0.4px;
+    }
+  }
+}
+
+.search-button {
+  border-radius: 1.5rem !important;
+  margin-left: 0.5rem;
+}
+.search-input {
+  border-radius: 1.5rem !important;
+}
