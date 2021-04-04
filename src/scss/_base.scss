@@ -17,6 +17,11 @@ $dark-theme: rgb(25, 38, 51);
 
 $shadow-dark: 0 2rem 6rem rgba(0, 0, 0, 0.3);
 
+@font-face {
+  font-family: "Crimson Text", serif;
+  src: url("../Assets/fonts/CrimsonText-Regular.ttf") format("truetype");
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -36,6 +41,7 @@ html {
 body {
   font-weight: 400;
   font-size: 1.6rem;
+  font-family: "Crimson Text", serif;
   color: var(--color-grey-dark-1);
   line-height: 1.6;
   background-color: #fff;
