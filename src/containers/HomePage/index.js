@@ -13,11 +13,10 @@ import "./index.scss";
 
 const { REACT_APP_API_KEY } = process.env;
 const index = () => {
-  const [apodData, setApodData] = useState(null);
+  const [apodData, setApodData] = useState({});
   const [searchInputText, setSearchInputText] = useState("");
   const { setSearchText } = useContext(SearchContext);
   const history = useHistory();
-
   useEffect(async () => {
     const apodData = await axios.get(
       `${API_ROOT_APOD}planetary/apod?api_key=${REACT_APP_API_KEY}`
@@ -26,7 +25,6 @@ const index = () => {
     setApodData(data);
     return () => {};
   }, []);
-
   const handleInputChange = (e) => {
     setSearchInputText(e.target.value);
   };
