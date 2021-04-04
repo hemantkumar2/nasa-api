@@ -173,10 +173,10 @@ const SearchResultPage = () => {
   const getNavbar = () => {
     return (
       <Navbar>
-        <LeftCircleTwoTone
-          onClick={() => history.push("/")}
-          style={{ fontSize: "34px", marginLeft: "2rem" }}
-        />
+        <div className="search-page-navbar" onClick={() => history.push("/")}>
+          <LeftCircleTwoTone style={{ fontSize: "34px", marginLeft: "2rem" }} />
+          <span className="back-from-search">Back</span>
+        </div>
       </Navbar>
     );
   };

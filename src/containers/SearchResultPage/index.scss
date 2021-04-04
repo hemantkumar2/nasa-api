@@ -11,3 +11,16 @@
   justify-content: center;
   padding: 5rem;
 }
+
+.search-page-navbar {
+  text-align: right;
+  position: relative;
+  margin-right: 7rem;
+  .back-from-search {
+    font-family: "Nasa", serif;
+    position: absolute;
+    font-size: 20px;
+    margin-left: 1rem;
+    top: 0.3rem;
+  }
+}
