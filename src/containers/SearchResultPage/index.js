@@ -60,7 +60,9 @@ const SearchResultPage = () => {
         });
     }
     fetchNasaImages();
-    return () => {};
+    return () => {
+      console.log("return from search!");
+    };
   }, []);
 
   const fetchMoreData = () => {
@@ -150,7 +152,7 @@ const SearchResultPage = () => {
         </div>
       );
     if (imagesData.status === 200 && !imagesData.images.length)
-      return <div>No Images found</div>;
+      return <div className="no-img-found">No Images found</div>;
     if (imagesData.status === 200 && imagesData.images.length)
       return getImageCardContainer();
   };
