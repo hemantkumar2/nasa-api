@@ -63,12 +63,13 @@ const index = () => {
       </>
     );
   };
+
   const getNavBar = () => {
     return (
       <Navbar>
-        <Row>
+        <Row justify="center">
           <Col lg={16}></Col>
-          <Col span={8}>
+          <Col lg={8}>
             <Form onFinish={handleSearch}>
               <Row>
                 <Col span={18}>
