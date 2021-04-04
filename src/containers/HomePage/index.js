@@ -24,9 +24,7 @@ const index = () => {
     );
     const { data } = apodData;
     setApodData(data);
-    return () => {
-      console.log("unsubscribe");
-    };
+    return () => {};
   }, []);
 
   const handleInputChange = (e) => {
