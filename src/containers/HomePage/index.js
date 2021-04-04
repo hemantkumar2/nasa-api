@@ -94,7 +94,12 @@ const index = () => {
   return (
     <>
       {getNavBar()}
-      <h1 style={{ textAlign: "center", margin: "1rem 0" }}>NASA Media</h1>
+      <h1
+        className="title-main"
+        style={{ textAlign: "center", margin: "2rem 0" }}
+      >
+        NASA Media
+      </h1>
       <Row justify="center">
         <Col xs={22} md={18} lg={14}>
           <Card className="apod-card">{getApod()}</Card>

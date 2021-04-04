@@ -21,6 +21,10 @@ $shadow-dark: 0 2rem 6rem rgba(0, 0, 0, 0.3);
   font-family: "Crimson Text", serif;
   src: url("../Assets/fonts/CrimsonText-Regular.ttf") format("truetype");
 }
+@font-face {
+  font-family: "Nasa", serif;
+  src: url("../Assets/fonts/Nasa.ttf") format("truetype");
+}
 
 * {
   margin: 0;
