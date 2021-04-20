@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Form, message, Card, Row, Col, Spin } from "antd";
 import { useHistory } from "react-router-dom";
+import ReactPlayer from "react-player/youtube";
 
 import { API_ROOT_APOD } from "constants/api-config";
 import { SearchContext } from "context/SearchContext";
@@ -35,17 +36,21 @@ const index = () => {
     setSearchText(searchInputText);
     history.push("/search-results");
   };
-
+  console.log(apodData?.url.slice(8, 23));
+  const getImageOrVideo = () => {
+    const url = apodData?.url;
+    const isVideo = url.slice(8, 23) === "www.youtube.com";
+    if (isVideo) return <ReactPlayer width="100%" url={url} controls={true} />;
+    return (
+      <img className="apod-image" src={apodData.url} alt={apodData.title} />
+    );
+  };
   const getApod = () => {
     return (
       <div>
         <Row justify="center">
           <Col span={24}>
-            <img
-              className="apod-image"
-              src={apodData.url}
-              alt={apodData.title}
-            />
+            {getImageOrVideo()}
             <div className="apod-details-container">
               <h2>{apodData.title}</h2>
               <p className="apod-date">{apodData.date}</p>
