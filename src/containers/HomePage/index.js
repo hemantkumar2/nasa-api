@@ -36,7 +36,6 @@ const index = () => {
     setSearchText(searchInputText);
     history.push("/search-results");
   };
-  console.log(apodData?.url.slice(8, 23));
   const getImageOrVideo = () => {
     const url = apodData?.url;
     const isVideo = url.slice(8, 23) === "www.youtube.com";

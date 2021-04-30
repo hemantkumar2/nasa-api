@@ -112,9 +112,12 @@ const SearchResultPage = () => {
       <Row justify="center">
         <Col xs={22} sm={20} md={20} lg={18} xl={16}>
           <Row
-            style={{ paddingTop: "5rem" }}
+            style={{
+              paddingTop: "5rem",
+              display: "flex",
+              justifyContent: "start",
+            }}
             gutter={[16, 16]}
-            justify="center"
           >
             {pagination?.paginatedImagesData[currentPage - 1]?.map((image) => {
               return (
