@@ -115,7 +115,7 @@ const SearchResultPage = () => {
             style={{
               paddingTop: "5rem",
               display: "flex",
-              justifyContent: "start",
+              justifyContent: "center",
             }}
             gutter={[16, 16]}
           >
