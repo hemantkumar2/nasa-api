@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { Card, message, Row, Col, Spin } from "antd";
 import { LeftCircleTwoTone } from "@ant-design/icons";
 import moment from "moment";
+import { useQuery } from "react-query";
 
 import { API_ROOT_IMAGES } from "constants/api-config";
 import { SearchContext } from "context/SearchContext";
@@ -14,85 +14,72 @@ import "./index.scss";
 
 const { Meta } = Card;
 
+const fetchData = async ({ queryKey }) => {
+  const response = await fetch(
+    `${API_ROOT_IMAGES}search?page=${queryKey[1]}&q=${queryKey[2]}&media_type=image`
+  );
+  return response.json();
+};
+
 const SearchResultPage = () => {
   const { searchText } = useContext(SearchContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentApiPage, setCurrentApiPage] = useState(1);
+  const { data, status } = useQuery(
+    ["nasaImageData", currentApiPage, searchText],
+    fetchData,
+    { keepPreviousData: true }
+  );
   const history = useHistory();
   const [imagesData, setImagesData] = useState({
     pageDetails: [],
     images: [],
-    status: null,
+    dataFetchStatus: null,
     nextPageFromApi: {},
   });
-  const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState({
     paginatedImagesData: [],
   });
-  const [currentApiPage, setCurrentApiPage] = useState(1);
   useEffect(() => {
     scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
 
+  console.log("imageData", data, status);
+
   useEffect(() => {
     const paginatedData = [];
-    function fetchNasaImages() {
-      axios
-        .get(
-          `${API_ROOT_IMAGES}search?page=${currentApiPage}&q=${searchText}&media_type=image`
-        )
-        .then((res) => {
-          setImagesData({
-            pageDetails: res?.data?.collection?.links,
-            images: res?.data?.collection?.items,
-            status: res?.status,
-            nextPageFromApi: res?.data?.collection?.links,
-          });
-          const imagesArr = res?.data?.collection?.items;
-          for (let i = 0; i < imagesArr.length / 20; i++) {
-            paginatedData.push(imagesArr.slice(i * 20, i * 20 + 20));
-          }
-          setPagination({
-            paginatedImagesData: paginatedData,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          message.error("Something went wrong contact support!");
-        });
-    }
-    fetchNasaImages();
+    fetchNasaImages(paginatedData);
     return () => {
       console.log("return from search!");
     };
-  }, []);
+  }, [status]);
 
-  const fetchMoreData = () => {
-    const paginatedData = [];
-    axios
-      .get(
-        `${API_ROOT_IMAGES}search?page=${currentApiPage}&q=${searchText}&media_type=image`
-      )
-      .then((res) => {
+  function fetchNasaImages(paginatedData) {
+    try {
+      if (status === "success") {
         setImagesData({
-          ...pagination,
-          pageDetails: res?.data?.collection?.links,
-          images: [...imagesData.images, ...res?.data?.collection?.items],
-          status: res?.status,
+          pageDetails: data?.collection?.links,
+          images: [...imagesData.images, ...data?.collection?.items],
+          dataFetchStatus: status,
+          nextPageFromApi: data?.collection?.links,
         });
-        const imagesArr = [
-          ...imagesData.images,
-          ...res?.data?.collection?.items,
-        ];
+        const imagesArr = [...imagesData.images, ...data?.collection?.items];
         for (let i = 0; i < imagesArr.length / 20; i++) {
           paginatedData.push(imagesArr.slice(i * 20, i * 20 + 20));
         }
         setPagination({
           paginatedImagesData: paginatedData,
         });
-      })
-      .catch((err) => {
-        console.log(err);
-        message.error("Something went wrong contact support!");
-      });
+      }
+    } catch (err) {
+      console.log(err);
+      message.error("Something went wrong contact support!");
+    }
+  }
+
+  const fetchMoreData = async () => {
+    const paginatedData = [];
+    fetchNasaImages(paginatedData);
   };
   const onPageChange = (pageNo) => {
     const maxPageNo = pagination?.paginatedImagesData.length;
@@ -126,6 +113,7 @@ const SearchResultPage = () => {
                     style={{ width: 200 }}
                     cover={
                       <img
+                        loading="lazy"
                         style={{ height: "15rem" }}
                         alt={image?.data[0]?.title}
                         src={image?.links[0]?.href}
@@ -148,18 +136,16 @@ const SearchResultPage = () => {
     );
   };
   const getSearchBody = () => {
-    if (imagesData.status === null)
+    if (imagesData.dataFetchStatus === null)
       return (
         <div className="loader">
           <Spin size="large" />
         </div>
       );
-    if (imagesData.status === 200 && !imagesData.images.length)
-      return <div className="no-img-found">No Images found</div>;
-    if (imagesData.status === 200 && imagesData.images.length)
-      return getImageCardContainer();
+    if (imagesData.dataFetchStatus === "success" && !imagesData.images.length)
+      return <div className="no-img-found">No Image found</div>;
+    if (imagesData.images.length) return getImageCardContainer();
   };
-
   const getPagination = () => {
     const total = imagesData.images.length;
     return (

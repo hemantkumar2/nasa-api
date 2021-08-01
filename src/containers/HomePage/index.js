@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
 import { Form, message, Card, Row, Col, Spin } from "antd";
 import { useHistory } from "react-router-dom";
 import ReactPlayer from "react-player/youtube";
+import { useQuery } from "react-query";
 
 import { API_ROOT_APOD } from "constants/api-config";
 import { SearchContext } from "context/SearchContext";
@@ -13,22 +13,33 @@ import Input from "components/Input";
 import "./index.scss";
 
 const { REACT_APP_API_KEY } = process.env;
-const index = () => {
+const HomePage = () => {
   const [apodData, setApodData] = useState();
   const [searchInputText, setSearchInputText] = useState("");
   const { setSearchText } = useContext(SearchContext);
   const history = useHistory();
+
+  const { data, status } = useQuery(
+    ["nasa_apod"],
+    () => fetchData(API_ROOT_APOD, REACT_APP_API_KEY),
+    { keepPreviousData: true }
+  );
+
   useEffect(async () => {
-    const apodData = await axios.get(
-      `${API_ROOT_APOD}planetary/apod?api_key=${REACT_APP_API_KEY}`
-    );
-    const { data } = apodData;
-    setApodData(data);
+    if (status === "success") setApodData(data);
     return () => {};
-  }, []);
+  }, [status]);
+
   const handleInputChange = (e) => {
     setSearchInputText(e.target.value);
   };
+
+  async function fetchData(API_ROOT_APOD, REACT_APP_API_KEY) {
+    const response = await fetch(
+      `${API_ROOT_APOD}planetary/apod?api_key=${REACT_APP_API_KEY}`
+    );
+    return response.json();
+  }
 
   const handleSearch = () => {
     if (!searchInputText)
@@ -119,4 +130,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default HomePage;
